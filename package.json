@@ -1,0 +1,32 @@
+{
+  "name": "social-backend",
+  "version": "1.0.0",
+  "description": "Node based backend for the social media application like facebook...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SquaredR98/node-social-backend.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "JavaScript",
+    "MongoDB",
+    "Mongoose",
+    "Redis",
+    "SocketIO",
+    "ExpressJS",
+    "TypeScript"
+  ],
+  "author": "Ravi Ranjan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SquaredR98/node-social-backend/issues"
+  },
+  "homepage": "https://github.com/SquaredR98/node-social-backend#readme",
+  "dependencies": {
+    "typescript": "^5.0.3"
+  }
+}
