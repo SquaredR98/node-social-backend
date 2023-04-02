@@ -1,2 +1,2 @@
-# node-social-backend
+# Node Social Backend
 NodeJS based backend for the social media application implemented using redis, socket and queue...
