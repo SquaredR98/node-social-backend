@@ -9,6 +9,14 @@ import {
 
 import { Server } from "http";
 
+import cors from "cors";
+import helmet from "helmet";
+import hpp from "hpp";
+import cookieSession from "cookie-session";
+import HTTP_STATUS from "http-status-codes";
+import "express-async-errors";
+import compression from "compression";
+
 export class BackendServer {
   private app: Application;
 
@@ -47,7 +55,25 @@ export class BackendServer {
    * middleware to be used in the main app.
    */
   private securityMiddleware(app: Application): void {
+    app.use(
+      cookieSession({
+        name: "backend-user-session",
+        keys: ["sample-key-one", "sample-key-two"],
+        maxAge: 24 * 7 * 3600000,
+        secure: false,
+      })
+    );
 
+    app.use(hpp());
+    app.use(helmet());
+    app.use(
+      cors({
+        origin: "*",
+        credentials: true, // Setting this is mandatory in order to use cookie
+        optionsSuccessStatus: 200,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      })
+    );
   }
 
   /**
@@ -56,7 +82,12 @@ export class BackendServer {
    *
    * This will contain all the standard middlewares.
    */
-  private standardMiddleware(app: Application): void {}
+  private standardMiddleware(app: Application): void {
+    // Help compress our request and response
+    app.use(compression());
+    app.use(json({ limit: "50mb" }));
+    app.use(urlencoded({ extended: true, limit: "50mb" }));
+  }
 
   /**
    *
@@ -83,9 +114,9 @@ export class BackendServer {
   private startServer(app: Application): void {}
 
   /**
-   * 
-   * @param httpServer 
-   * 
+   *
+   * @param httpServer
+   *
    * Method to create an instance of SocketIO
    */
   private createSocketIO(httpServer: Server): void {}
