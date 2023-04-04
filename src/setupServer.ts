@@ -7,7 +7,7 @@ import {
   NextFunction,
 } from "express";
 
-import { Server } from "http";
+import http from "http";
 
 import cors from "cors";
 import helmet from "helmet";
@@ -16,6 +16,8 @@ import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import "express-async-errors";
 import compression from "compression";
+
+const SERVER_PORT = 5000;
 
 export class BackendServer {
   private app: Application;
@@ -111,7 +113,14 @@ export class BackendServer {
    *
    * This method is going to start the httpServer
    */
-  private startServer(app: Application): void {}
+  private async startServer(app: Application): Promise<void> {
+    try {
+      const httpServer: http.Server = new http.Server(app);
+      this.startHttpServer(httpServer);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   /**
    *
@@ -119,7 +128,11 @@ export class BackendServer {
    *
    * Method to create an instance of SocketIO
    */
-  private createSocketIO(httpServer: Server): void {}
+  private createSocketIO(httpServer: http.Server): void {}
 
-  private startHttpServer(httpServer: Server): void {}
+  private startHttpServer(httpServer: http.Server): void {
+    httpServer.listen(SERVER_PORT, () => {
+      console.log('Server is listening on: ', SERVER_PORT);
+    })
+  }
 }
