@@ -132,7 +132,7 @@ export class BackendServer {
 
   private startHttpServer(httpServer: http.Server): void {
     httpServer.listen(SERVER_PORT, () => {
-      console.log('Server is listening on: ', SERVER_PORT);
+      console.log('Server is listening on port:', SERVER_PORT);
     })
   }
 }
