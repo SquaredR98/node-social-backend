@@ -16,6 +16,10 @@ import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import "express-async-errors";
 import compression from "compression";
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
+import { createAdapter } from '@socket.io/redis-adapter';
+
 import { config } from "./config";
 
 const SERVER_PORT = 5000;
@@ -63,7 +67,7 @@ export class BackendServer {
         name: "backend-user-session",
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: config.NODE_ENV !== 'development',
+        secure: config.NODE_ENV !== "development",
       })
     );
 
@@ -117,7 +121,9 @@ export class BackendServer {
   private async startServer(app: Application): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(app);
+      const SocketIO: Server = await this.createSocketIO(httpServer);
       this.startHttpServer(httpServer);
+      this.sockeIOConnection(SocketIO);
     } catch (error) {
       console.log(error);
     }
@@ -129,11 +135,30 @@ export class BackendServer {
    *
    * Method to create an instance of SocketIO
    */
-  private createSocketIO(httpServer: http.Server): void {}
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    const io: Server = new Server(httpServer, {
+      cors: {
+        origin: config.CLIENT_URL,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      }
+    })
+
+    const pubClient = createClient({ url: config.REDIS_HOST });
+    const subClient = pubClient.duplicate();
+
+    await Promise.all([pubClient.connect(), subClient.connect()]);
+    const adapter: any = createAdapter(pubClient, subClient);
+    io.adapter(adapter);
+
+    return io;
+  }
 
   private startHttpServer(httpServer: http.Server): void {
+    console.log(`Server has started with process id ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      console.log('Server is listening on port:', SERVER_PORT);
-    })
+      console.log("Server is listening on port:", SERVER_PORT);
+    });
   }
+
+  private sockeIOConnection(io: Server): void {}
 }
