@@ -16,6 +16,7 @@ import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import "express-async-errors";
 import compression from "compression";
+import { config } from "./config";
 
 const SERVER_PORT = 5000;
 
@@ -60,9 +61,9 @@ export class BackendServer {
     app.use(
       cookieSession({
         name: "backend-user-session",
-        keys: ["sample-key-one", "sample-key-two"],
+        keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: false,
+        secure: config.NODE_ENV !== 'development',
       })
     );
 
