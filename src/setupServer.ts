@@ -21,6 +21,7 @@ import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 
 import { config } from "./config";
+import applicationRoutes from './routes';
 
 const SERVER_PORT = 5000;
 
@@ -102,7 +103,9 @@ export class BackendServer {
    *
    * It will contain all the routes related middleware.
    */
-  private routesMiddleware(app: Application): void {}
+  private routesMiddleware(app: Application): void {
+    applicationRoutes(app);
+  }
 
   /**
    *
