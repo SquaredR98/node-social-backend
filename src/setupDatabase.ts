@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { config } from "./config";
 
 export default () => {
   const connect = () => {
-    mongoose.connect(`${config.DATABASE_URI!}`, {})
+    mongoose.connect('mongodb://127.0.0.1:27017/test', {})
       .then(() => {
         console.log('Succesfully connected to DB...')
       })
