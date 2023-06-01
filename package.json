@@ -4,7 +4,7 @@
   "description": "Node based backend for the social media application like facebook...",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r tsconfig-paths/register src/index.ts"
+    "dev": "nodemon -r tsconfig-paths/register src/index.ts | ./node_modules/.bin/bunyan"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/SquaredR98/node-social-backend#readme",
   "dependencies": {
     "@socket.io/redis-adapter": "^8.2.1",
+    "bunyan": "^1.8.15",
     "compression": "^1.7.4",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
@@ -43,6 +44,7 @@
     "typescript": "^5.0.3"
   },
   "devDependencies": {
+    "@types/bunyan": "^1.8.8",
     "@types/compression": "^1.7.2",
     "@types/cookie-session": "^2.0.44",
     "@types/cors": "^2.8.13",
