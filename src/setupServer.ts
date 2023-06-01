@@ -24,7 +24,10 @@ import { config } from "./config";
 import applicationRoutes from './routes';
 import { CustomError, IErrorResponse } from './shared/globals/helpers/error-handler';
 
+import Logger from 'bunyan';
+
 const SERVER_PORT = 5000;
+const logger: Logger = config.createLogger('ServerSetup');
 
 export class BackendServer {
   private app: Application;
@@ -122,6 +125,7 @@ export class BackendServer {
     })
 
     app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+      logger.error(error);
       if(error instanceof CustomError) {
         return res.status(error.statusCode).json(error.serializeErrors());
       }
@@ -142,7 +146,7 @@ export class BackendServer {
       this.startHttpServer(httpServer);
       this.sockeIOConnection(SocketIO);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   }
 
@@ -171,9 +175,9 @@ export class BackendServer {
   }
 
   private startHttpServer(httpServer: http.Server): void {
-    console.log(`Server has started with process id ${process.pid}`);
+    logger.info(`Server has started with process id ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      console.log("Server is listening on port:", SERVER_PORT);
+      logger.info("Server is listening on port:", SERVER_PORT);
     });
   }
 
