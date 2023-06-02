@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import bunyan from 'bunyan';
 
-dotenv.config({})
+dotenv.config({});
 
 class Config {
   public DATABASE_URI : string | undefined;
@@ -12,7 +12,7 @@ class Config {
   public NODE_ENV : string | undefined;
   public REDIS_HOST : string | undefined;
 
-  private readonly DEFAULT_DB_URI = 'mongodb://127.0.0.1:27017/test'
+  private readonly DEFAULT_DB_URI = 'mongodb://127.0.0.1:27017/test';
 
   constructor () {
     this.DATABASE_URI = process.env.DATABASE_URI || this.DEFAULT_DB_URI;

@@ -1,7 +1,7 @@
-import express, { Express } from "express";
-import { BackendServer } from "./setupServer";
+import express, { Express } from 'express';
+import { BackendServer } from './setupServer';
 import databaseConnection from './setupDatabase';
-import { config } from "./config";
+import { config } from './config';
 
 class Application {
   /**
