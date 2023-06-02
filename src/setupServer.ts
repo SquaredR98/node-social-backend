@@ -5,22 +5,22 @@ import {
   Response,
   Request,
   NextFunction,
-} from "express";
+} from 'express';
 
-import http from "http";
+import http from 'http';
 
-import cors from "cors";
-import helmet from "helmet";
-import hpp from "hpp";
-import cookieSession from "cookie-session";
-import HTTP_STATUS from "http-status-codes";
-import "express-async-errors";
-import compression from "compression";
+import cors from 'cors';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import cookieSession from 'cookie-session';
+import HTTP_STATUS from 'http-status-codes';
+import 'express-async-errors';
+import compression from 'compression';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 
-import { config } from "./config";
+import { config } from './config';
 import applicationRoutes from './routes';
 import { CustomError, IErrorResponse } from './shared/globals/helpers/error-handler';
 
@@ -69,10 +69,10 @@ export class BackendServer {
   private securityMiddleware(app: Application): void {
     app.use(
       cookieSession({
-        name: "backend-user-session",
+        name: 'backend-user-session',
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: config.NODE_ENV !== "development",
+        secure: config.NODE_ENV !== 'development',
       })
     );
 
@@ -80,10 +80,10 @@ export class BackendServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: "*",
+        origin: '*',
         credentials: true, // Setting this is mandatory in order to use cookie
         optionsSuccessStatus: 200,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       })
     );
   }
@@ -97,8 +97,8 @@ export class BackendServer {
   private standardMiddleware(app: Application): void {
     // Help compress our request and response
     app.use(compression());
-    app.use(json({ limit: "50mb" }));
-    app.use(urlencoded({ extended: true, limit: "50mb" }));
+    app.use(json({ limit: '50mb' }));
+    app.use(urlencoded({ extended: true, limit: '50mb' }));
   }
 
   /**
@@ -121,8 +121,8 @@ export class BackendServer {
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({
         message: `${req.originalUrl} not found.`
-      })
-    })
+      });
+    });
 
     app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
       logger.error(error);
@@ -130,7 +130,7 @@ export class BackendServer {
         return res.status(error.statusCode).json(error.serializeErrors());
       }
       next();
-    })
+    });
   }
 
   /**
@@ -160,9 +160,9 @@ export class BackendServer {
     const io: Server = new Server(httpServer, {
       cors: {
         origin: config.CLIENT_URL,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       }
-    })
+    });
 
     const pubClient = createClient({ url: config.REDIS_HOST });
     const subClient = pubClient.duplicate();
@@ -177,9 +177,11 @@ export class BackendServer {
   private startHttpServer(httpServer: http.Server): void {
     logger.info(`Server has started with process id ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      logger.info("Server is listening on port:", SERVER_PORT);
+      logger.info('Server is listening on port:', SERVER_PORT);
     });
   }
 
-  private sockeIOConnection(io: Server): void {}
+  private sockeIOConnection(io: Server): void {
+    return;
+  }
 }
