@@ -1,23 +1,26 @@
+/**
+ * Basic Libraries
+ */
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
-
+import hpp from 'hpp';
 import http from 'http';
-
 import cors from 'cors';
 import helmet from 'helmet';
-import hpp from 'hpp';
-import cookieSession from 'cookie-session';
-import HTTP_STATUS from 'http-status-codes';
+import Logger from 'bunyan';
 import 'express-async-errors';
-import compression from 'compression';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
+import compression from 'compression';
+import cookieSession from 'cookie-session';
+import HTTP_STATUS from 'http-status-codes';
 import { createAdapter } from '@socket.io/redis-adapter';
 
-import { config } from './config';
-import applicationRoutes from './routes';
-import { CustomError, IErrorResponse } from './shared/globals/helpers/error-handler';
-
-import Logger from 'bunyan';
+/**
+ * Custom Files created
+ */
+import { config } from '@root/config';
+import applicationRoutes from '@root/routes';
+import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
 
 const SERVER_PORT = 5000;
 const logger: Logger = config.createLogger('ServerSetup');
