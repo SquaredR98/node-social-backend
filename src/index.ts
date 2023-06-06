@@ -29,4 +29,5 @@ class Application {
 }
 
 const application: Application = new Application();
+console.log(express);
 application.initialize();
