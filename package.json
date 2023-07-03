@@ -35,6 +35,7 @@
   "dependencies": {
     "@socket.io/redis-adapter": "^8.2.1",
     "bcryptjs": "^2.4.3",
+    "bull": "^4.10.4",
     "bunyan": "^1.8.15",
     "cloudinary": "^1.37.0",
     "compression": "^1.7.4",
