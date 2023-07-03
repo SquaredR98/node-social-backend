@@ -12,6 +12,8 @@ import HTTP_STATUS from 'http-status-codes';
 import { IUserDocument } from '@user/interfaces/user.interface';
 import { UserCache } from '@services/redis/user.cache';
 import { config } from '../../../config';
+import { omit } from 'lodash';
+import { authQueue } from '../../../shared/services/queues/auth.queue';
 
 const userCache: UserCache = new UserCache();
 
@@ -42,16 +44,25 @@ export class SignUp {
       avatarColor
     });
 
-    const result: UploadApiResponse = await upload(avatarImage, `${userObjectId}`, true, true) as UploadApiResponse;
+    const result: UploadApiResponse = (await upload(
+      avatarImage,
+      `${userObjectId}`,
+      true,
+      true
+    )) as UploadApiResponse;
 
-    if(!result?.public_id) throw new BadRequestError('File Upload: Something went wrong, please try again');
+    if (!result?.public_id)
+      throw new BadRequestError('File Upload: Something went wrong, please try again');
 
     const userDataForCache: IUserDocument = SignUp.prototype.userData(authData, userObjectId);
     userDataForCache.profilePicture = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId}`;
 
     await userCache.saveUserToCache(`${userObjectId}`, uId, userDataForCache);
-    
-    res.status(HTTP_STATUS.CREATED).json({message: 'User created successfully', authData});
+
+    omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor', 'password']);
+    authQueue.addAuthUserJob('addAuthUserToDB', { value: userDataForCache });
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User created successfully', authData });
   }
 
   private signUpData(data: ISignUpData): IAuthDocument {
@@ -95,14 +106,14 @@ export class SignUp {
         messages: true,
         reactions: true,
         comments: true,
-        follows: true,
+        follows: true
       },
       social: {
         facebook: '',
         instagram: '',
         twitter: '',
-        youtube: '',
-      },
+        youtube: ''
+      }
     } as unknown as IUserDocument;
   }
 }
