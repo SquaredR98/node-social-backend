@@ -1,7 +1,14 @@
 /**
  * Basic Libraries
  */
-import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
+import {
+  Application,
+  json,
+  urlencoded,
+  Response,
+  Request,
+  NextFunction
+} from 'express';
 import hpp from 'hpp';
 import http from 'http';
 import cors from 'cors';
@@ -120,13 +127,20 @@ export class BackendServer {
       });
     });
 
-    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      logger.error(error);
-      if (error instanceof CustomError) {
-        return res.status(error.statusCode).json(error.serializeErrors());
+    app.use(
+      (
+        error: IErrorResponse,
+        req: Request,
+        res: Response,
+        next: NextFunction
+      ) => {
+        logger.error(error);
+        if (error instanceof CustomError) {
+          return res.status(error.statusCode).json(error.serializeErrors());
+        }
+        next();
       }
-      next();
-    });
+    );
   }
 
   /**
