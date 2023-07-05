@@ -15,6 +15,10 @@ export class AuthService {
 
     return user;
   }
+
+  public async createAuthUser(data: IAuthDocument): Promise<void> {
+    await AuthModel.create(data);
+  }
 }
 
 export const authService: AuthService = new AuthService();
