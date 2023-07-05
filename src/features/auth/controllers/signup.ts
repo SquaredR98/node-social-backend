@@ -1,20 +1,23 @@
+import { omit } from 'lodash';
+import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
-import { joiValidation } from '@globals/decorators/joi-validation.decorator';
-import { signupSchema } from '@auth/schemes/signup';
-import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface';
-import { authService } from '@services/db/auth.service';
-import { BadRequestError } from '@globals/helpers/error-handler';
-import { Helpers } from '@globals/helpers/helpers';
 import { UploadApiResponse } from 'cloudinary';
-import { upload } from '@globals/helpers/cloudinary-upload';
+
 import HTTP_STATUS from 'http-status-codes';
-import { IUserDocument } from '@user/interfaces/user.interface';
+
+import { config } from '@root/config';
+import { Helpers } from '@globals/helpers/helpers';
+import { signupSchema } from '@auth/schemes/signup';
 import { UserCache } from '@services/redis/user.cache';
-import { config } from '../../../config';
-import { omit } from 'lodash';
-import { authQueue } from '../../../shared/services/queues/auth.queue';
-import { userQueue } from '../../../shared/services/queues/user.queue';
+import { authService } from '@services/db/auth.service';
+import { authQueue } from '@services/queues/auth.queue';
+import { userQueue } from '@services/queues/user.queue';
+import { upload } from '@globals/helpers/cloudinary-upload';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { BadRequestError } from '@globals/helpers/error-handler';
+import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface';
+import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 
 const userCache: UserCache = new UserCache();
 
@@ -61,15 +64,18 @@ export class SignUp {
     await userCache.saveUserToCache(`${userObjectId}`, uId, userDataForCache);
 
     omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor', 'password']);
-    authQueue.addAuthUserJob('addAuthUserToDB', { value: userDataForCache });
+    authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
     userQueue.addUserJob('addUserToDB', { value: userDataForCache });
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'User created successfully', authData });
+    const userJwt: string = SignUp.prototype.signedToken(authData, userObjectId);
+
+    req.session = { jwt: userJwt };
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User created successfully', user: userDataForCache, token: userJwt });
   }
 
   private signUpData(data: ISignUpData): IAuthDocument {
     const { _id, username, email, uId, password, avatarColor } = data;
-
     return {
       _id,
       uId,
@@ -83,7 +89,6 @@ export class SignUp {
 
   private userData(data: IAuthDocument, userObjectId: ObjectId): IUserDocument {
     const { _id, username, email, uId, password, avatarColor } = data;
-
     return {
       _id: userObjectId,
       authId: _id,
@@ -117,5 +122,18 @@ export class SignUp {
         youtube: ''
       }
     } as unknown as IUserDocument;
+  }
+
+  private signedToken(data: IAuthDocument, userObjectId: ObjectId): string {
+    return jwt.sign(
+      {
+        userId: userObjectId,
+        uId: data.uId,
+        email: data.email,
+        username: data.username,
+        avatarColor: data.avatarColor
+      },
+      config.JWT_TOKEN!
+    );
   }
 }
