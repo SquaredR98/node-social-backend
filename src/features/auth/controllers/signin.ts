@@ -10,6 +10,7 @@ import { BadRequestError } from '@globals/helpers/error-handler';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 import { IUserDocument } from '@user/interfaces/user.interface';
 import { userService } from '@services/db/user.service';
+import { mailTransport } from '../../../shared/services/emails/mail.transport';
 
 export class SignIn {
   @joiValidation(loginSchema)
@@ -47,6 +48,13 @@ export class SignIn {
       avatarColor: existingUser.avatarColor,
       createdAt: existingUser.createdAt
     } as IUserDocument;
+
+    await mailTransport.sensEmail(
+      ' erich.bergstrom39@ethereal.email',
+      'Testing Ethereal Email',
+      'Welcome to the proper testing of the ethereal email'
+    );
+
     res.status(HTTP_STATUS.OK).json({ message: 'Login successful', userDocument, token: userJwt });
   }
 }
