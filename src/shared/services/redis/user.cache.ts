@@ -3,6 +3,7 @@ import { IUserDocument } from '@user/interfaces/user.interface';
 import Logger from 'bunyan';
 import { config } from '@root/config';
 import { ServerError } from '@globals/helpers/error-handler';
+import { Helpers } from '../../globals/helpers/helpers';
 
 const logger: Logger = config.createLogger('user-cache');
 
@@ -97,6 +98,37 @@ export class UserCache extends BaseCache {
 
       await this.client.ZADD('user', { score: parseInt(userId, 10), value: `${key}` });
       await this.client.HSET(`user:${key}`, dataToSave);
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Server error. Try again.');
+    }
+  }
+
+  public async getUserFromCache(key: string): Promise<IUserDocument | null> {
+    try {
+      if (!this.client.isOpen) await this.client.connect();
+
+      const response: IUserDocument = (await this.client.HGETALL(
+        `users:${key}`
+      )) as unknown as IUserDocument;
+
+      response.createdAt = new Date(Helpers.parseJson(`${response.createdAt}`));
+      response.postsCount = Helpers.parseJson(`${response.postsCount}`);
+      response.blocked = Helpers.parseJson(`${response.blocked}`);
+      response.blockedBy = Helpers.parseJson(`${response.blockedBy}`);
+      response.notifications = Helpers.parseJson(`${response.notifications}`);
+      response.social = Helpers.parseJson(`${response.social}`);
+      response.followersCount = Helpers.parseJson(`${response.followersCount}`);
+      response.followingCount = Helpers.parseJson(`${response.followingCount}`);
+      response.bgImageId = Helpers.parseJson(`${response.bgImageId}`);
+      response.bgImageVersion = Helpers.parseJson(`${response.bgImageVersion}`);
+      response.profilePicture = Helpers.parseJson(`${response.profilePicture}`);
+      response.work = Helpers.parseJson(`${response.work}`);
+      response.school = Helpers.parseJson(`${response.school}`);
+      response.location = Helpers.parseJson(`${response.location}`);
+      response.quote = Helpers.parseJson(`${response.quote}`);
+
+      return response;
     } catch (error) {
       logger.error(error);
       throw new ServerError('Server error. Try again.');
