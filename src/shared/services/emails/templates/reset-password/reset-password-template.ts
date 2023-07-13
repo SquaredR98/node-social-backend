@@ -10,6 +10,7 @@ class ResetPasswordTemplate {
       username,
       email,
       ipaddress,
+      date: new Date(),
       image_url: 'https://e7.pngegg.com/pngimages/1024/909/png-clipart-computer-icons-lock-padlock-technic-computer-icons.png'
     });
   }
