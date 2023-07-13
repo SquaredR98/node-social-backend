@@ -5,7 +5,7 @@ import { emailWorker } from '../../workers/email.worker';
 class EmailQueue extends BaseQueue {
   constructor() {
     super('emails');
-    this.processJob('forgotPassowrdEmail', 5, emailWorker.addNotificationEmail);
+    this.processJob('forgotPasswordEmail', 5, emailWorker.addNotificationEmail);
   }
 
   public addEmailJob(name: string, data: IEmailJob): void {
