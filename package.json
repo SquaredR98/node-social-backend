@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./build/index",
-    "dev": "nodemon -r tsconfig-paths/register src/index.ts | ./node_modules/.bin/bunyan",
+    "dev-linux": "nodemon -r tsconfig-paths/register src/index.ts | ./node_modules/.bin/bunyan",
+    "dev-win": "nodemon -r tsconfig-paths/register src/index.ts | .\\node_modules\\.bin\\bunyan",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "lint:check": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",

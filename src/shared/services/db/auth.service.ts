@@ -6,7 +6,7 @@ export class AuthService {
   public async getUserByUsernameOrEmail(username: string, email: string): Promise<IAuthDocument> {
     const query = {
       $or: [
-        { username: Helpers.firstLetterUppercase(username) },
+        { username },
         { email: Helpers.lowerCase(email) }
       ]
     };

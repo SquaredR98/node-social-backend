@@ -97,7 +97,9 @@ export class UserCache extends BaseCache {
       }
 
       await this.client.ZADD('user', { score: parseInt(userId, 10), value: `${key}` });
-      await this.client.HSET(`user:${key}`, dataToSave);
+      for (const [itemKey, itemValue] of Object.entries(dataToSave)) {
+        await this.client.HSET(`users:${key}`, `${itemKey}`, `${itemValue}`);
+      }
     } catch (error) {
       logger.error(error);
       throw new ServerError('Server error. Try again.');
