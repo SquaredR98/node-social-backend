@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserCache } from '@services/redis/user.cache';
-import { IUserDocument } from '../../user/interfaces/user.interface';
-import { userService } from '../../../shared/services/db/user.service';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { userService } from '@services/db/user.service';
 import HTTP_STATUS from 'http-status-codes';
 
 const userCache: UserCache = new UserCache();
@@ -21,7 +21,7 @@ export class CurrentUser {
 
     if(Object.keys(existingUser).length) {
       isUser = true;
-      token = req.session;
+      token = req?.session?.jwt;
       user = existingUser;
     }
 

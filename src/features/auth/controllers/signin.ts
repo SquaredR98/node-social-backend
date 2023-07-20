@@ -10,6 +10,9 @@ import { BadRequestError } from '@globals/helpers/error-handler';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 import { IUserDocument } from '@user/interfaces/user.interface';
 import { userService } from '@services/db/user.service';
+import { mailTransport } from '../../../shared/services/emails/mail.transport';
+import { forgotPasswordTemplate } from '../../../shared/services/emails/templates/forgot-password/forgot-password-template';
+import { emailQueue } from '../../../shared/services/queues/email.queue';
 
 export class SignIn {
   @joiValidation(loginSchema)
@@ -47,6 +50,20 @@ export class SignIn {
       avatarColor: existingUser.avatarColor,
       createdAt: existingUser.createdAt
     } as IUserDocument;
+
+    const resetLink = `${config.CLIENT_URL}/reset-password?token=dfsdfbk0239ru0ehsr98394f`;
+    const template = forgotPasswordTemplate.forgotTemplate(existingUser.username, resetLink);
+    emailQueue.addEmailJob('forgotPassowrdEmail', {
+      receiverEmail: 'erich.bergstrom39@ethereal.email',
+      subject: 'Reset Your Password',
+      template
+    });
+    await mailTransport.sensEmail(
+      ' erich.bergstrom39@ethereal.email',
+      'Testing Ethereal Email',
+      'Welcome to the proper testing of the ethereal email'
+    );
+
     res.status(HTTP_STATUS.OK).json({ message: 'Login successful', userDocument, token: userJwt });
   }
 }
