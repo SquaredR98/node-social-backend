@@ -3,7 +3,7 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  verbose: false,
+  verbose: true,
   coverageDirectory: 'coverage',
   collectCoverage: true,
   testPathIgnorePatterns: ['/node_modules'],
@@ -28,6 +28,7 @@ const config: Config.InitialOptions = {
     '@services/(.*)': ['<rootDir>/src/shared/services/$1'],
     '@sockets/(.*)': ['<rootDir>/src/shared/sockets/$1'],
     '@workers/(.*)': ['<rootDir>/src/shared/workers/$1'],
+    '@mocks/(.*)': ['<rootDir>/src/mocks/$1'],
     '@root/(.*)': ['<rootDir>/src/$1']
   }
 };

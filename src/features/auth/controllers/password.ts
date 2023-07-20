@@ -78,6 +78,6 @@ export class Password {
       subject: 'Password reset conformation'
     });
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Password Reset Email Sent' });
+    res.status(HTTP_STATUS.OK).json({ message: 'Password successfully updated.' });
   }
 }

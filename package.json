@@ -11,7 +11,7 @@
     "lint:fix": "eslint 'src/**/*.ts' --fix",
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,json}'",
-    "test": "jest --coverage=true -w=1 -forceExit --detectOpenHandles --watchAll=false"
+    "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false"
   },
   "repository": {
     "type": "git",
@@ -75,6 +75,7 @@
     "@types/express": "^4.17.17",
     "@types/hpp": "^0.2.2",
     "@types/ip": "^1.1.0",
+    "@types/jest": "^29.5.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/lodash": "^4.14.195",
     "@types/nodemailer": "^6.4.8",

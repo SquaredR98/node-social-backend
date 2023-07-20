@@ -21,7 +21,7 @@ export class CurrentUser {
 
     if(Object.keys(existingUser).length) {
       isUser = true;
-      token = req.session;
+      token = req?.session?.jwt;
       user = existingUser;
     }
 
