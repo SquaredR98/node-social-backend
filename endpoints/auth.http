@@ -39,3 +39,26 @@ GET {{baseUrl}}/{{urlPath}}/current-user
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+
+### 
+POST {{baseUrl}}/{{urlPath}}/forgot-password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email": "ravi@ranjan.com"
+}
+
+
+### 
+POST {{baseUrl}}/{{urlPath}}/reset-password/74c768019403decc0837e5737296f0ebe285ed8cd6e12838bf15250bd232e1118342bcb88a449d2699b1c1feaabb46539528aa0c17f0e619afb8535b3cdb62cde22bfe9951370e483684bd529f7baa04f3c040004ae40e5e4d55b58e80b998a8b074099b
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "password": "ravi1234",
+  "confirmPassword": "ravi1234"
+}
