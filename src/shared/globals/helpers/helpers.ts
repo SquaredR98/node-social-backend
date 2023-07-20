@@ -11,7 +11,7 @@ export class Helpers {
     return valueString
       .split(' ')
       .map(
-        (value: string) => `${value.charAt(0).toLocaleLowerCase}${value.slice(1).toLowerCase()}`
+        (value: string) => `${value.charAt(0).toLowerCase()}${value.slice(1).toLowerCase()}`
       )
       .join(' ');
   }

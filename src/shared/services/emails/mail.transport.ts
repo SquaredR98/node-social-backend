@@ -13,7 +13,7 @@ interface IMailOptions {
 
 const logger: Logger = config.createLogger('email');
 
-sendGridMail.setApiKey(config.SENDGRID_API_KEY!);
+// sendGridMail.setApiKey(config.SENDGRID_API_KEY!);
 
 class MailTransport {
   public async sensEmail(receiverEmail: string, subject: string, body: string): Promise<void> {

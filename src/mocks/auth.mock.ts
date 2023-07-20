@@ -15,8 +15,8 @@ export const mockAuthRequest = (sessionData: IJWT, body: IAuthMock, currentUser?
 
 export const mockAuthResponse = (): Response => {
   const res: Response = {} as Response;
-  res.status = jest.fn().mockResolvedValue(res);
-  res.json = jest.fn().mockResolvedValue(res);
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
 
   return res;
 };
