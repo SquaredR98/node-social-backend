@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-let socketIoPostObject: Server;
+export let socketIOPostObject: Server;
 
 
 export class SocketIoPostHandler {
@@ -8,7 +8,7 @@ export class SocketIoPostHandler {
 
   constructor(io: Server) {
     this.io = io;
-    socketIoPostObject = io;
+    socketIOPostObject = io;
   }
 
   public listen(): void {

@@ -9,6 +9,7 @@ import { postQueue } from '@services/queues/post.queue';
 import { UploadApiResponse } from 'cloudinary';
 import { upload } from '@globals/helpers/cloudinary-upload';
 import { BadRequestError } from '@globals/helpers/error-handler';
+import { socketIOPostObject } from '@sockets/post';
 
 const postCache: PostCache = new PostCache();
 
@@ -43,6 +44,8 @@ export class Create {
         angry: 0
       }
     } as IPostDocument;
+
+    socketIOPostObject.emit('add post', createdPost);
 
     await postCache.savePostToCache({
       key: postObjectId,
@@ -93,6 +96,8 @@ export class Create {
         angry: 0
       }
     } as IPostDocument;
+
+    socketIOPostObject.emit('add post', createdPost);
 
     await postCache.savePostToCache({
       key: postObjectId,
