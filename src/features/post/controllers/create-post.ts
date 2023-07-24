@@ -3,8 +3,9 @@ import HTTP_STATUS from 'http-status-codes';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 import { postSchema } from '@post/schemes/post.schemes';
 import { ObjectId } from 'mongodb';
-import { IPostDocument } from '../interfaces/post.interface';
-import { PostCache } from '../../../shared/services/redis/post.cache';
+import { IPostDocument } from '@post/interfaces/post.interface';
+import { PostCache } from '@services/redis/post.cache';
+import { postQueue } from '../../../shared/services/queues/post.queue';
 
 const postCache: PostCache = new PostCache();
 
@@ -45,6 +46,11 @@ export class Create {
       currentUserId: `${req.currentUser!.userId}`,
       uId: `${req.currentUser!.uId}`,
       createdPost
+    });
+
+    postQueue.addPostJob('addPostToDB', {
+      key: req.currentUser?.userId,
+      value: createdPost
     });
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully' });
