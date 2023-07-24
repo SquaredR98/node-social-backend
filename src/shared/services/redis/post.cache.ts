@@ -1,10 +1,14 @@
 import Logger from 'bunyan';
 import { config } from '@root/config';
 import { BaseCache } from '@services/redis/base.cache';
-import { ISavePostToCache } from '@post/interfaces/post.interface';
-import { ServerError } from '../../globals/helpers/error-handler';
+import { IPostDocument, IReactions, ISavePostToCache } from '@post/interfaces/post.interface';
+import { ServerError } from '@globals/helpers/error-handler';
+import { Helpers } from '@globals/helpers/helpers';
+import { RedisCommandRawReply } from '@redis/client/dist/lib/commands';
 
 const logger: Logger = config.createLogger('POST-CACHE');
+
+export type PostCacheMultiType = string | number | Buffer | RedisCommandRawReply[] | IPostDocument | IPostDocument[];
 
 export class PostCache extends BaseCache {
   constructor() {
@@ -90,6 +94,36 @@ export class PostCache extends BaseCache {
     } catch (error) {
       logger.error(error);
       throw new ServerError('Something went wrong. Try again.');
+    }
+  }
+
+  public async getPostsFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
+    try {
+      if(!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+
+      for(const value of reply) {
+        multi.HGETALL(`posts:${value}`);
+      }
+      
+      const replies: any = await multi.exec();
+      const postReplies: IPostDocument[] = [];
+      for (const post of replies as IPostDocument[]) {
+        post.commentsCount = Helpers.parseJson(`${post.commentsCount}`) as number;
+        post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
+        post.createdAt = new Date(Helpers.parseJson(`${post.createdAt}`)) as Date;
+        postReplies.push(post);
+      }
+
+      return postReplies;
+      
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Something went wrong. Try again.'); 
     }
   }
 }
