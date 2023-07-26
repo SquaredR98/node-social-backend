@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import mongoose, { Document } from 'mongoose';
 
 // Will be moved to different directories later on
-interface IReactions {
+export interface IReactions {
   like: number;
   love: number;
   haha: number;
