@@ -10,9 +10,6 @@ import { BadRequestError } from '@globals/helpers/error-handler';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 import { IUserDocument } from '@user/interfaces/user.interface';
 import { userService } from '@services/db/user.service';
-import { UserCache } from '@services/redis/user.cache';
-
-const userCache: UserCache = new UserCache();
 
 export class SignIn {
   @joiValidation(loginSchema)
@@ -50,8 +47,6 @@ export class SignIn {
       avatarColor: existingUser.avatarColor,
       createdAt: existingUser.createdAt
     } as IUserDocument;
-
-    await userCache.saveUserToCache(`${existingUser._id}`, existingUser.uId, userDocument);
 
     res.status(HTTP_STATUS.OK).json({ message: 'Login successful', userDocument, token: userJwt });
   }

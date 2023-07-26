@@ -112,7 +112,7 @@ export class PostCache extends BaseCache {
         await this.client.connect();
       }
 
-      const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
+      const reply: string[] = await this.client.ZRANGE(key, start, end/* , { REV: true } */);
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
 
       for (const value of reply) {
@@ -226,6 +226,28 @@ export class PostCache extends BaseCache {
 
       const count: number = await this.client.ZCOUNT('post', uId, uId);
       return count;
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Something went wrong. Try again.');
+    }
+  }
+
+  public async deletePostsFromCache(key: string, currentUserId: string): Promise<void> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+
+      multi.ZREM('post', `${key}`);
+      multi.DEL(`posts:${key}`);
+      
+      const count: number = parseInt(postCount[0], 10) - 1;
+      multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
+
+      await multi.exec();
     } catch (error) {
       logger.error(error);
       throw new ServerError('Something went wrong. Try again.');
