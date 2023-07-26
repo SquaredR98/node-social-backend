@@ -42,45 +42,24 @@ export class PostCache extends BaseCache {
       createdAt
     } = createdPost;
 
-    const firstList = [
-      '_id',
-      `${_id}`,
-      'userId',
-      `${userId}`,
-      'username',
-      `${username}`,
-      'email',
-      `${email}`,
-      'avatarColor',
-      `${avatarColor}`,
-      'profilePicture',
-      `${profilePicture}`,
-      'post',
-      `${post}`,
-      'bgColor',
-      `${bgColor}`,
-      'feelings',
-      `${feelings}`,
-      'privacy',
-      `${privacy}`,
-      'gifUrl',
-      `${gifUrl}`
-    ];
-
-    const secondList = [
-      'commentsCount',
-      `${commentsCount}`,
-      'reactions',
-      JSON.stringify(reactions),
-      'imgVersion',
-      `${imgVersion}`,
-      'imgId',
-      `${imgId}`,
-      'createdAt',
-      `${createdAt}`
-    ];
-
-    const dataToSave: string[] = [...firstList, ...secondList];
+    const dataToSave = {
+      '_id': `${_id}`,
+      'userId': `${userId}`,
+      'username': `${username}`,
+      'email': `${email}`,
+      'avatarColor': `${avatarColor}`,
+      'profilePicture': `${profilePicture}`,
+      'post': `${post}`,
+      'bgColor': `${bgColor}`,
+      'feelings': `${feelings}`,
+      'privacy': `${privacy}`,
+      'gifUrl': `${gifUrl}`,
+      'commentsCount': `${commentsCount}`,
+      'reactions': JSON.stringify(reactions),
+      'imgVersion': `${imgVersion}`,
+      'imgId': `${imgId}`,
+      'createdAt': `${createdAt}`
+    };
 
     try {
       if (!this.client.isOpen) {
@@ -90,10 +69,12 @@ export class PostCache extends BaseCache {
       const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.ZADD('post', { score: parseInt(uId, 10), value: `${key}` });
-      multi.HSET(`posts:${key}`, dataToSave);
+      for(const [itemKey, itemValue] of Object.entries(dataToSave)) {
+        multi.HSET(`posts:${key}`, `${itemKey}`, `${itemValue}`);
+      }
       const count: number = parseInt(postCount[0], 10) + 1;
 
-      multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
+      multi.HSET(`users:${currentUserId}`, 'postsCount', count);
 
       multi.exec();
     } catch (error) {
@@ -245,9 +226,47 @@ export class PostCache extends BaseCache {
       multi.DEL(`posts:${key}`);
       
       const count: number = parseInt(postCount[0], 10) - 1;
-      multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
+      multi.HSET(`users:${currentUserId}`, 'postsCount', count);
 
       await multi.exec();
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Something went wrong. Try again.');
+    }
+  }
+
+  public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
+    const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = updatedPost;
+
+    const dataToUpdate = {
+      'post': `${post}`,
+      'bgColor': `${bgColor}`,
+      'feelings': `${feelings}`,
+      'privacy': `${privacy}`,
+      'gifUrl': `${gifUrl}`,
+      'profilePicture': `${profilePicture}`,
+      'imgVersion': `${imgVersion}`,
+      'imgId': `${imgId}`
+    };
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      for(const [itemKey, itemValue] of Object.entries(dataToUpdate)) {
+        await this.client.HSET(`posts:${key}`, `${itemKey}`, `${itemValue}`);
+      }
+
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+      multi.HGETALL(`posts:${key}`);
+      const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const postReply = reply as IPostDocument[];
+      postReply[0].commentsCount = Helpers.parseJson(`${postReply[0].commentsCount}`) as number;
+      postReply[0].reactions = Helpers.parseJson(`${postReply[0].reactions}`) as IReactions;
+      postReply[0].createdAt = new Date(Helpers.parseJson(`${postReply[0].createdAt}`)) as Date;
+
+
+      return postReply[0];
     } catch (error) {
       logger.error(error);
       throw new ServerError('Something went wrong. Try again.');
