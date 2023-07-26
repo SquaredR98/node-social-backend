@@ -88,7 +88,6 @@ export class PostCache extends BaseCache {
       }
 
       const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
-      console.log(postCount);
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.ZADD('post', { score: parseInt(uId, 10), value: `${key}` });
       multi.HSET(`posts:${key}`, dataToSave);
