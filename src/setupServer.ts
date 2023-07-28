@@ -28,6 +28,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { config } from '@root/config';
 import applicationRoutes from '@root/routes';
 import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
+import { SocketIoPostHandler } from './shared/sockets/post';
 
 const SERVER_PORT = 5000;
 const logger: Logger = config.createLogger('ServerSetup');
@@ -190,8 +191,9 @@ export class BackendServer {
   }
 
   private sockeIOConnection(io: Server): void {
-    io;
-    return;
+    const postSocketHandler: SocketIoPostHandler = new SocketIoPostHandler(io);
+
+    postSocketHandler.listen();
   }
 }
 
