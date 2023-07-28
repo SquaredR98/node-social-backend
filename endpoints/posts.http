@@ -66,3 +66,19 @@ withCredentials: true,
   "profilePicture": "<cloudinary-user-profile-picture-url>",
   "feelings": ""
 }
+
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post/image/<postId>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true,
+
+{
+  "post": "",
+  "bgColor": "",
+  "privacy": "",
+  "gifUrl": "",
+  "profilePicture": "<cloudinary-user-profile-picture-url>",
+  "feelings": ""
+}

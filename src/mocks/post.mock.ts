@@ -57,9 +57,9 @@ export const postMockData: IPostDocument = {
   bgColor: '#f44336',
   imgId: '',
   imgVersion: '',
-  feelings: 'happy',
+  feelings: 'wow',
   gifUrl: '',
-  privacy: 'Public',
+  privacy: 'Private',
   commentsCount: 0,
   createdAt: new Date(),
   reactions: {
