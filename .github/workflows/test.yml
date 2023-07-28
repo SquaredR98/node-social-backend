@@ -1,4 +1,3 @@
-yaml
 name: Node Social Backend CI
 on:
   push:
