@@ -38,7 +38,7 @@ export class Create {
       reactions: {
         like: 0,
         love: 0,
-        haha: 0,
+        happy: 0,
         sad: 0,
         wow: 0,
         angry: 0
@@ -90,7 +90,7 @@ export class Create {
       reactions: {
         like: 0,
         love: 0,
-        haha: 0,
+        happy: 0,
         sad: 0,
         wow: 0,
         angry: 0

@@ -1,10 +1,11 @@
 import Logger from 'bunyan';
 import { config } from '@root/config';
 import { BaseCache } from '@services/redis/base.cache';
-import { IPostDocument, IReactions, ISavePostToCache } from '@post/interfaces/post.interface';
+import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface';
 import { ServerError } from '@globals/helpers/error-handler';
 import { Helpers } from '@globals/helpers/helpers';
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands';
+import { IReactions } from '@reactions/interfaces/reaction.interface';
 
 const logger: Logger = config.createLogger('POST-CACHE');
 
