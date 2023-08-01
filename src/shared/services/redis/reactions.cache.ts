@@ -58,8 +58,7 @@ export class ReactionCache extends BaseCache {
       multi.LREM(`reactions:${key}`, 1, JSON.stringify(userPreviousReaction));
       await multi.exec();
 
-      const dataToSave: string[] = ['reactions', JSON.stringify(postReactions)];
-      await this.client.HSET(`posts:${key}`, dataToSave);
+      await this.client.HSET(`posts:${key}`, 'reactions', JSON.stringify(postReactions));
     } catch (error) {
       logger.error(error);
       throw new ServerError('Server error. Try again');
