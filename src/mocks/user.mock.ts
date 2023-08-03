@@ -52,7 +52,7 @@ export const existingUser = {
   profilePicture: 'http://place-hold.it/500x500',
   _id: '60263f14648fed5246e322d9',
   uId: '1621613119252066',
-  username: 'Manny',
+  username: 'manny',
   email: 'manny@me.com',
   avatarColor: 'red',
   work: 'KickChat Inc.',
