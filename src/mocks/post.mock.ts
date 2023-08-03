@@ -55,8 +55,8 @@ export const postMockData: IPostDocument = {
   profilePicture: existingUser.profilePicture,
   post: 'how are you?',
   bgColor: '#f44336',
-  imgId: '',
-  imgVersion: '',
+  imgId: '1234',
+  imgVersion: '1234',
   feelings: 'wow',
   gifUrl: '',
   privacy: 'Private',
@@ -85,7 +85,7 @@ export const updatedPost = {
 
 export const updatedPostWithImage = {
   profilePicture: postMockData.profilePicture,
-  post: 'Wonderful',
+  post: 'how are you?',
   bgColor: postMockData.bgColor,
   feelings: 'wow',
   privacy: 'Private',
