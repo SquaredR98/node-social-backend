@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:5000
+@urlPath = api/v1
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/reaction/64c8fba1b9995d4a22d59f23
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/reaction/64c8fba1b9995d4a22d59f23/squaredr
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/reaction-by-username/squaredr
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
+POST {{baseUrl}}/{{urlPath}}/post/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "64c3bfb40fe3b1cbca2aec55",
+  "postId": "64c8fba1b9995d4a22d59f23",
+  "type": "like",
+  "previousReaction": "",
+  "postReactions": {"like": 1,"love": 0,"happy": 0,"sad": 0,"wow": 0,"angry": 0},
+  "profilePicture": "https://res.cloudinary.com/duywfhwqq/image/upload/v1689069231/64ad26aa5141b6769c074770"
+}
+
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/post/reaction/64c8fba1b9995d4a22d59f23/like/{"like": 1,"love": 0,"happy": 0,"sad": 0,"wow": 0,"angry": 0}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+# {
+#   "userTo": "64c3bfb40fe3b1cbca2aec55",
+#   "postId": "64c8fba1b9995d4a22d59f23",
+#   "type": "like",
+#   "previousReaction": "love",
+#   "postReactions": {"like": 1,"love": 0,"happy": 0,"sad": 0,"wow": 0,"angry": 0},
+#   "profilePicture": "https://res.cloudinary.com/duywfhwqq/image/upload/v1689069231/64ad26aa5141b6769c074770"
+# }
