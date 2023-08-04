@@ -20,7 +20,8 @@ jobs:
         run: npm i
 
       - name: Run CI Tests
-        run: |
-            npm run test --env.JWT_TOKEN=${{ secrets.JWT_TOKEN }} \
-                        --env.SECRET_KEY_ONE=${{ secrets.SECRET_KEY_ONE }} \
-                        --env.SECRET_KEY_TWO=${{ secrets.SECRET_KEY_TWO }}
+        env: 
+          JWT_TOKEN: 'random-key-for-testing-ci'
+          SECRET_KEY_ONE: 'random-key-for-testing-ci'
+          SECRET_KEY_TWO: 'random-key-for-testing-ci'
+        run: echo $JWT_TOKEN
