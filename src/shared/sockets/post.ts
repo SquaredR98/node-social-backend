@@ -1,4 +1,6 @@
 import { Server, Socket } from 'socket.io';
+import { IReactionDocument } from '../../features/reactions/interfaces/reaction.interface';
+import { ICommentDocument } from '../../features/comments/interfaces/comment.interface';
 
 export let socketIOPostObject: Server;
 
@@ -13,8 +15,12 @@ export class SocketIoPostHandler {
 
   public listen(): void {
     this.io.on('connection', (socket: Socket) => {
-      console.log('Socket IO Connection');
-      return socket;
+      socket.on('reaction', (reaction: IReactionDocument) => {
+        this.io.emit('update like', reaction);
+      });
+      socket.on('comment', (comment: ICommentDocument) => {
+        this.io.emit('update comment', comment);
+      });
     });
   }
 }
