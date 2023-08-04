@@ -24,4 +24,4 @@ jobs:
           JWT_TOKEN: 'random-key-for-testing-ci'
           SECRET_KEY_ONE: 'random-key-for-testing-ci'
           SECRET_KEY_TWO: 'random-key-for-testing-ci'
-        run: echo $JWT_TOKEN
+        run: npm run test
