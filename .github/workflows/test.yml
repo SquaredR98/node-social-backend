@@ -1,8 +1,7 @@
 name: Node Social Backend CI
 on:
   push:
-    branches:
-      - development
+    branches: [ development, main ]
 
 jobs:
   build: 
