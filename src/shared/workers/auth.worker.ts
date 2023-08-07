@@ -4,7 +4,7 @@ import { DoneCallback, Job } from 'bull';
 import { authService } from '@services/db/auth.service';
 
 
-const logger: Logger = config.createLogger('authWorker');
+const logger: Logger = config.createLogger('AUTH-WORKER');
 
 class AuthWorker {
   async addAuthUserToDB(job: Job, done: DoneCallback): Promise<void> {
