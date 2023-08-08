@@ -1,11 +1,14 @@
-import { Request, Response } from 'express';
-import HTTP_STATUS from 'http-status-codes';
-import { FollowersCache } from '@services/redis/followers.cache';
-import { UserCache } from '@services/redis/user.cache';
-import { IUserDocument } from '@user/interfaces/user.interface';
-import { IFollowerData } from '@followers/interfaces/follower.interface';
 import mongoose from 'mongoose';
+import { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
+import HTTP_STATUS from 'http-status-codes';
+
+import { UserCache } from '@services/redis/user.cache';
 import { socketIOFollowerObject } from '@sockets/followers';
+import { followerQueue } from '@services/queues/follower.queue';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { FollowersCache } from '@services/redis/followers.cache';
+import { IFollowerData } from '@followers/interfaces/follower.interface';
 
 const followersCache: FollowersCache = new FollowersCache();
 const userCache: UserCache = new UserCache();
@@ -24,14 +27,21 @@ export class Add {
 
     const response: [IUserDocument, IUserDocument] = await Promise.all([cachedFollower, cachedFollowee]);
 
+    const followerObjectId: ObjectId = new ObjectId();
     const addFollowerData: IFollowerData = Add.prototype.userData(response[0]);
-    
     socketIOFollowerObject.emit('add follower', addFollowerData);
 
     const addFollowerToCache: Promise<void> = followersCache.saveFollowerToCache(`followers:${req.currentUser?.userId}`, `${followerId}`);
     const addFolloweeToCache: Promise<void> = followersCache.saveFollowerToCache(`following:${followerId}`, `${req.currentUser?.userId}`);
 
     await Promise.all([addFollowerToCache, addFolloweeToCache]);
+
+    followerQueue.addFollowerJob('addFollowerToDB', {
+      keyOne: `${req.currentUser?.userId}`,
+      keyTwo: `${followerId}`,
+      username: req.currentUser?.username,
+      followerDocumentId: followerObjectId
+    }),
 
     res.status(HTTP_STATUS.OK).json({ message: 'Following user now'});
   }
