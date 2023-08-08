@@ -6,3 +6,10 @@ PUT {{baseUrl}}/{{urlPath}}/user/follow/64d1e60ec19fa1cd62aa19dd
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+
+### 
+PUT {{baseUrl}}/{{urlPath}}/user/unfollow/64d1e60ec19fa1cd62aa19dd/64d1e5e4c19fa1cd62aa19d6
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

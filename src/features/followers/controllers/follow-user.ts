@@ -18,21 +18,20 @@ export class Add {
     const { followerId } = req.params;
 
     const followersCount: Promise<void> = followersCache.updateFollowersCountInCache(`${followerId}`, 'followersCount', 1);
-    const followeesCount: Promise<void> = followersCache.updateFollowersCountInCache(`${req.currentUser?.userId}`, 'followingCount', 1);
-
+    const followeesCount: Promise<void> = followersCache.updateFollowersCountInCache(`${req.currentUser!.userId}`, 'followingCount', 1);
     await Promise.all([followersCount, followeesCount]);
 
-    const cachedFollowee: Promise<IUserDocument> = userCache.getUserFromCache(followerId) as Promise<IUserDocument>;
-    const cachedFollower: Promise<IUserDocument> = userCache.getUserFromCache(`${req.currentUser?.userId}`) as Promise<IUserDocument>;
+    const cachedFollower: Promise<IUserDocument> = userCache.getUserFromCache(followerId) as Promise<IUserDocument>;
+    const cachedFollowee: Promise<IUserDocument> = userCache.getUserFromCache(`${req.currentUser!.userId}`) as Promise<IUserDocument>;
 
     const response: [IUserDocument, IUserDocument] = await Promise.all([cachedFollower, cachedFollowee]);
-
+    
     const followerObjectId: ObjectId = new ObjectId();
     const addFollowerData: IFollowerData = Add.prototype.userData(response[0]);
     socketIOFollowerObject.emit('add follower', addFollowerData);
 
-    const addFollowerToCache: Promise<void> = followersCache.saveFollowerToCache(`followers:${req.currentUser?.userId}`, `${followerId}`);
-    const addFolloweeToCache: Promise<void> = followersCache.saveFollowerToCache(`following:${followerId}`, `${req.currentUser?.userId}`);
+    const addFollowerToCache: Promise<void> = followersCache.saveFollowerToCache(`following:${req.currentUser?.userId}`, `${followerId}`);
+    const addFolloweeToCache: Promise<void> = followersCache.saveFollowerToCache(`followers:${followerId}`, `${req.currentUser?.userId}`);
 
     await Promise.all([addFollowerToCache, addFolloweeToCache]);
 
@@ -48,7 +47,7 @@ export class Add {
 
   private userData(user: IUserDocument): IFollowerData {
     return {
-      _id: new mongoose.Types.ObjectId(user._id),
+      _id: new mongoose.Types.ObjectId(user._id!),
       username: user.username!,
       avatarColor: user.avatarColor!,
       postCount: user.postsCount,
