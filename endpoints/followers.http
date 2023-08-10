@@ -2,6 +2,20 @@
 @urlPath = api/v1
 
 ### 
+GET {{baseUrl}}/{{urlPath}}/user/following
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### 
+PUT {{baseUrl}}/{{urlPath}}/user/followers/64d1e60ec19fa1cd62aa19dd
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### 
 PUT {{baseUrl}}/{{urlPath}}/user/follow/64d1e60ec19fa1cd62aa19dd
 Content-Type: application/json
 Accept: application/json
