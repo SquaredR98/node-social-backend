@@ -13,7 +13,7 @@
     // "sourceMap": true,                     /* Generates corresponding '.map' file. */
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
     "outDir": "./build" /* Redirect output structure to the directory. */,
-    "rootDir": "src" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
+    "rootDir": "." /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
     // "composite": true,                     /* Enable project compilation */
     // "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
     // "removeComments": true,                /* Do not emit comments to output. */
@@ -82,6 +82,7 @@
       "@post/*": ["src/features/post/*"],
       "@reactions/*": ["src/features/reactions/*"],
       "@comments/*": ["src/features/comments/*"],
+      "@followers/*": ["src/features/followers/*"],
       "@globals/*": ["src/shared/globals/*"],
       "@services/*": ["src/shared/services/*"],
       "@sockets/*": ["src/shared/sockets/*"],
