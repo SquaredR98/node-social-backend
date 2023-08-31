@@ -30,6 +30,7 @@ import applicationRoutes from '@root/routes';
 import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
 import { SocketIoPostHandler } from './shared/sockets/post';
 import { SocketIoFollowerHandler } from './shared/sockets/followers';
+import { SocketIOUserHandler } from './shared/sockets/user';
 
 const SERVER_PORT = 5000;
 const logger: Logger = config.createLogger('ServerSetup');
@@ -194,9 +195,11 @@ export class BackendServer {
   private sockeIOConnection(io: Server): void {
     const postSocketHandler: SocketIoPostHandler = new SocketIoPostHandler(io);
     const followSocketHandler: SocketIoFollowerHandler = new SocketIoFollowerHandler(io);
+    const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
 
     postSocketHandler.listen();
     followSocketHandler.listen();
+    userSocketHandler.listen();
   }
 }
 
