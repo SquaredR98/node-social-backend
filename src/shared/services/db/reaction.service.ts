@@ -1,15 +1,20 @@
+import { omit } from 'lodash';
+import mongoose from 'mongoose';
 import {
   IQueryReaction,
   IReactionDocument,
   IReactionJob
 } from '@reactions/interfaces/reaction.interface';
 import { UserCache } from '@services/redis/user.cache';
-import { ReactionModel } from '../../../features/reactions/models/reaction.schema';
-import { PostModel } from '../../../features/post/models/post.schema';
-import { IUserDocument } from '../../../features/user/interfaces/user.interface';
-import { IPostDocument } from '../../../features/post/interfaces/post.interface';
-import { omit } from 'lodash';
-import mongoose from 'mongoose';
+import { ReactionModel } from '@reactions/models/reaction.schema';
+import { PostModel } from '@post/models/post.schema';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { IPostDocument } from '@post/interfaces/post.interface';
+import { INotification, INotificationDocument, INotificationTemplate } from '../../../features/notification/interfaces/notification.interface';
+import { NotificationModel } from '../../../features/notification/models/notification.schema';
+import { socketIoNotificationObject } from '../../sockets/notification';
+import { notificationTemplate } from '../emails/templates/notification/notification-template';
+import { emailQueue } from '../queues/email.queue';
 
 const userCache: UserCache = new UserCache();
 
@@ -39,7 +44,40 @@ class ReactionService {
       )
     ])) as unknown as [IUserDocument, IReactionDocument, IPostDocument];
 
-    // Send reactions notification
+    if (updateReaction[0]?.notifications.reactions && userTo !== userFrom) {
+      const notificationModel: INotificationDocument = new NotificationModel();
+      const notifications = await notificationModel.insertNotification({
+        userFrom,
+        userTo,
+        message: `${username} reacted to your post`,
+        notificationType: 'follow',
+        entityId: new mongoose.Types.ObjectId(postId),
+        createdItemId: new mongoose.Types.ObjectId(updateReaction[1]._id),
+        createdAt: new Date(),
+        post: updateReaction[2].post,
+        imgId: updateReaction[2].imgId,
+        imgVersion: updateReaction[2].imgVersion,
+        gifUrl: updateReaction[2].gifUrl,
+        reaction: type,
+      } as INotification);
+
+      // Send to client using socket
+      socketIoNotificationObject.emit('insert notification', notifications, { userTo });
+
+      // Send to email queue
+      const templateParams: INotificationTemplate = {
+        username: updateReaction[0]?.username as string,
+        message: `${username} reacted to your post.`,
+        header: 'Someone reacted to your post'
+      };
+
+      const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
+      emailQueue.addEmailJob('reactionsEmail', {
+        receiverEmail: updateReaction[0]?.email as string,
+        template,
+        subject: 'Follow Notification'
+      });
+    }
   }
 
   public async removeReactionDataFromDB(reactionData: IReactionJob): Promise<void> {
