@@ -31,6 +31,7 @@ import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
 import { SocketIoPostHandler } from './shared/sockets/post';
 import { SocketIoFollowerHandler } from './shared/sockets/followers';
 import { SocketIOUserHandler } from './shared/sockets/user';
+import { SocketIoNotificationHandler } from './shared/sockets/notification';
 
 const SERVER_PORT = 5000;
 const logger: Logger = config.createLogger('ServerSetup');
@@ -196,10 +197,12 @@ export class BackendServer {
     const postSocketHandler: SocketIoPostHandler = new SocketIoPostHandler(io);
     const followSocketHandler: SocketIoFollowerHandler = new SocketIoFollowerHandler(io);
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
+    const notificationSocketHandler: SocketIoNotificationHandler = new SocketIoNotificationHandler();
 
     postSocketHandler.listen();
     followSocketHandler.listen();
     userSocketHandler.listen();
+    notificationSocketHandler.listen(io);
   }
 }
 
