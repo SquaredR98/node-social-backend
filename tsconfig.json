@@ -80,6 +80,7 @@
       "@auth/*": ["src/features/auth/*"],
       "@user/*": ["src/features/user/*"],
       "@post/*": ["src/features/post/*"],
+      "@notification/*": ["src/features/notification/*"],
       "@reactions/*": ["src/features/reactions/*"],
       "@comments/*": ["src/features/comments/*"],
       "@followers/*": ["src/features/followers/*"],
