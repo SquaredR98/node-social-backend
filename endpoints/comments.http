@@ -2,7 +2,7 @@
 @urlPath = api/v1
 
 ###
-GET {{baseUrl}}/{{urlPath}}/post/comment/64c8fba1b9995d4a22d59f23
+GET {{baseUrl}}/{{urlPath}}/post/comment/64f7158ea404b18de34a8bca
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
@@ -29,8 +29,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "userTo": "64c3bfb40fe3b1cbca2aec55",
-  "postId": "64c8fba1b9995d4a22d59f23",
+  "userTo": "64f82fdf8e4ef44e904b8d30",
+  "postId": "64f82ffd8e4ef44e904b8d35",
   "comment": "Adding one more test comment",
   "profilePicture": "https://res.cloudinary.com/duywfhwqq/image/upload/v1689069231/64ad26aa5141b6769c074770"
 }
