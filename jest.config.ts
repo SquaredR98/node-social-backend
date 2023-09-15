@@ -24,6 +24,7 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '@auth/(.*)': ['<rootDir>/src/features/auth/$1'],
     '@user/(.*)': ['<rootDir>/src/features/user/$1'],
+    '@notification/(.*)': ['<rootDir>/src/features/notification/$1'],
     '@reactions/(.*)': ['<rootDir>/src/features/reactions/$1'],
     '@comments/(.*)': ['<rootDir>/src/features/comments/$1'],
     '@followers/(.*)': ['<rootDir>/src/features/followers/$1'],
