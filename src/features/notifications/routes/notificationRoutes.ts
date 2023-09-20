@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
 import { authMiddleware } from '@globals/helpers/auth-middleware';
 
-import { Get } from '@notification/controllers/get-notification';
-import { Update } from '@notification/controllers/update-notification';
-import { Delete } from '@notification/controllers/delete-notification';
+import { Get } from '@notifications/controllers/get-notification';
+import { Update } from '@notifications/controllers/update-notification';
+import { Delete } from '@notifications/controllers/delete-notification';
 
 class NotificationRoutes {
   private router: Router;

@@ -6,11 +6,11 @@ import Logger from 'bunyan';
 import { config } from '@root/config';
 import { IAuthJob } from '@auth/interfaces/auth.interface';
 import { IEmailJob } from '@user/interfaces/user.interface';
-import { IPostJobData } from '@post/interfaces/post.interface';
+import { IPostJobData } from '@posts/interfaces/post.interface';
 import { IReactionJob } from '@reactions/interfaces/reaction.interface';
 import { ICommentJob } from '@comments/interfaces/comment.interface';
 import { IFollowerJobData } from '@followers/interfaces/follower.interface';
-import { INotificationJobData } from '../../../features/notification/interfaces/notification.interface';
+import { INotificationJobData } from '../../../features/notifications/interfaces/notification.interface';
 
 type IBaseJobData =
   | IAuthJob

@@ -6,16 +6,16 @@ import {
   IQueryComment
 } from '@comments/interfaces/comment.interface';
 import { CommentsModel } from '@comments/models/comment.schema';
-import { IPostDocument } from '@post/interfaces/post.interface';
-import { PostModel } from '@post/models/post.schema';
+import { IPostDocument } from '@posts/interfaces/post.interface';
+import { PostModel } from '@posts/models/post.schema';
 import mongoose, { Query } from 'mongoose';
 import { UserCache } from '../redis/user.cache';
 import { IUserDocument } from '@user/interfaces/user.interface';
-import { NotificationModel } from '@notification/models/notification.schema';
+import { NotificationModel } from '@notifications/models/notification.schema';
 import {
   INotificationDocument,
   INotificationTemplate
-} from '@notification/interfaces/notification.interface';
+} from '@notifications/interfaces/notification.interface';
 import { socketIoNotificationObject } from '../../sockets/notification';
 import { notificationTemplate } from '../emails/templates/notification/notification-template';
 import { emailQueue } from '../queues/email.queue';

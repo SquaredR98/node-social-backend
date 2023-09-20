@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import HTTP_STATUS from 'http-status-codes';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
-import { postSchema, postWithImageSchema } from '@post/schemes/post.schemes';
+import { postSchema, postWithImageSchema } from '@posts/schemes/post.schemes';
 import { ObjectId } from 'mongodb';
-import { IPostDocument } from '@post/interfaces/post.interface';
+import { IPostDocument } from '@posts/interfaces/post.interface';
 import { PostCache } from '@services/redis/post.cache';
 import { postQueue } from '@services/queues/post.queue';
 import { UploadApiResponse } from 'cloudinary';

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { authUserPayload } from '@root/mocks/auth.mock';
 import { notificationData, notificationMockRequest, notificationMockResponse } from '@root/mocks/notification.mock';
-import { Get } from '@notification/controllers/get-notification';
+import { Get } from '@notifications/controllers/get-notification';
 import { notificationService } from '@services/db/notification.service';
 
 jest.useFakeTimers();

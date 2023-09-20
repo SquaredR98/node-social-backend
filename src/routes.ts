@@ -3,11 +3,11 @@ import { authRoutes } from '@auth/routes/authRoutes';
 import { serverAdapter } from '@services/queues/base.queue';
 import { currentUserRoute } from '@auth/routes/currentRoutes';
 import { authMiddleware } from '@globals/helpers/auth-middleware';
-import { postRoute } from '@post/routes/postRoutes';
+import { postRoute } from '@posts/routes/postRoutes';
 import { reactionRoutes } from '@reactions/routes/reactionRoutes';
 import { commentRoutes } from '@comments/routes/commentsRoute';
 import { followRoutes } from '@followers/routes/followRoutes';
-import { notificationRoutes } from './features/notification/routes/notificationRoutes';
+import { notificationRoutes } from './features/notifications/routes/notificationRoutes';
 
 const BASE_PATH = '/api/v1';
 

@@ -4,7 +4,7 @@ import { authUserPayload } from '@root/mocks/auth.mock';
 import * as postServer from '@sockets/post';
 import { newPost, postMockRequest, postMockResponse } from '@root/mocks/post.mock';
 import { postQueue } from '@services/queues/post.queue';
-import { Delete } from '@post/controllers/delete-post';
+import { Delete } from '@posts/controllers/delete-post';
 import { PostCache } from '@services/redis/post.cache';
 
 jest.useFakeTimers();
