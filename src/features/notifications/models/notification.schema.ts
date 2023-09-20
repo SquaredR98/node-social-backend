@@ -5,7 +5,7 @@ import { config } from '@root/config';
 import {
   INotification,
   INotificationDocument
-} from '@notification/interfaces/notification.interface';
+} from '@notifications/interfaces/notification.interface';
 import { notificationService } from '@services/db/notification.service';
 
 const logger: Logger = config.createLogger('Notification Schema');

@@ -6,7 +6,7 @@ import * as postServer from '@sockets/post';
 import { postMockData, postMockRequest, postMockResponse, updatedPost, updatedPostWithImage } from '@root/mocks/post.mock';
 import { PostCache } from '@services/redis/post.cache';
 import { postQueue } from '@services/queues/post.queue';
-import { Update } from '@post/controllers/update-post';
+import { Update } from '@posts/controllers/update-post';
 import * as cloudinaryUploads from '@globals/helpers/cloudinary-upload';
 
 jest.useFakeTimers();

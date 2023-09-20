@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { authUserPayload } from '@root/mocks/auth.mock';
 import { newPost, postMockData, postMockRequest, postMockResponse } from '@root/mocks/post.mock';
 import { PostCache } from '@services/redis/post.cache';
-import { Get } from '@post/controllers/get-posts';
+import { Get } from '@posts/controllers/get-posts';
 import { postService } from '@services/db/post.service';
 
 jest.useFakeTimers();
