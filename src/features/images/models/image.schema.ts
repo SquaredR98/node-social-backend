@@ -1,5 +1,5 @@
 import mongoose, { model, Model, Schema } from 'mongoose';
-import { IFileImageDocument } from '@image/interfaces/image.interface';
+import { IFileImageDocument } from '@images/interfaces/image.interface';
 
 const imageSchema: Schema = new Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
