@@ -1,15 +1,18 @@
+import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import HTTP_STATUS from 'http-status-codes';
-import { joiValidation } from '@globals/decorators/joi-validation.decorator';
-import { postSchema, postWithImageSchema } from '@posts/schemes/post.schemes';
-import { ObjectId } from 'mongodb';
-import { IPostDocument } from '@posts/interfaces/post.interface';
+import { UploadApiResponse } from 'cloudinary';
+
+import { socketIOPostObject } from '@sockets/post';
 import { PostCache } from '@services/redis/post.cache';
 import { postQueue } from '@services/queues/post.queue';
-import { UploadApiResponse } from 'cloudinary';
 import { upload } from '@globals/helpers/cloudinary-upload';
 import { BadRequestError } from '@globals/helpers/error-handler';
-import { socketIOPostObject } from '@sockets/post';
+import { IPostDocument } from '@posts/interfaces/post.interface';
+import { joiValidation } from '@globals/decorators/joi-validation.decorator';
+import { postSchema, postWithImageSchema } from '@posts/schemes/post.schemes';
+import { imageQueue } from '../../../shared/services/queues/image.queue';
+import { result } from 'lodash';
 
 const postCache: PostCache = new PostCache();
 
@@ -111,7 +114,11 @@ export class Create {
       value: createdPost
     });
 
-    // Call image queue to add to mongodb
+    imageQueue.addImageJob('addImageToDB', {
+      key: `${req.currentUser!.userId}`,
+      imgId: result.public_id,
+      imgVersion: result.version.toString()
+    })
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully' });
   }
