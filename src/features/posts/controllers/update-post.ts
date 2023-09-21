@@ -1,15 +1,17 @@
-import HTTP_STATUS from 'http-status-codes';
-import { PostCache } from '@services/redis/post.cache';
+import { extend } from 'lodash';
 import { Request, Response } from 'express';
+import HTTP_STATUS from 'http-status-codes';
+import { UploadApiResponse } from 'cloudinary';
+
 import { socketIOPostObject } from '@sockets/post';
+import { PostCache } from '@services/redis/post.cache';
 import { postQueue } from '@services/queues/post.queue';
+import { upload } from '@globals/helpers/cloudinary-upload';
+import { IPostDocument } from '@posts/interfaces/post.interface';
+import { BadRequestError } from '@globals/helpers/error-handler';
 import { joiValidation } from '@globals/decorators/joi-validation.decorator';
 import { postSchema, postWithImageSchema } from '@posts/schemes/post.schemes';
-import { IPostDocument } from '@posts/interfaces/post.interface';
-import { UploadApiResponse } from 'cloudinary';
-import { upload } from '../../../shared/globals/helpers/cloudinary-upload';
-import { extend } from 'lodash';
-import { BadRequestError } from '../../../shared/globals/helpers/error-handler';
+import { imageQueue } from '../../../shared/services/queues/image.queue';
 
 const postCache: PostCache = new PostCache();
 
@@ -61,7 +63,7 @@ export class Update {
     } else {
       const result: UploadApiResponse = await Update.prototype.addImageToExistingPost(
         postId,
-        extend(updatedPost, image)
+        extend(updatedPost, image, req.currentUser!.userId)
       );
 
       if (!result?.public_id) throw new BadRequestError(result.message);
@@ -93,9 +95,9 @@ export class Update {
 
   private async addImageToExistingPost(
     postId: string,
-    data: IPostDocument & { image: string }
+    data: IPostDocument & { image: string } & { userId: string }
   ): Promise<UploadApiResponse> {
-    const { post, bgColor, feelings, privacy, gifUrl, profilePicture, image } = data;
+    const { post, bgColor, feelings, privacy, gifUrl, profilePicture, image, userId } = data;
 
     const result: UploadApiResponse = (await upload(image)) as UploadApiResponse;
 
@@ -115,13 +117,19 @@ export class Update {
     } as IPostDocument;
 
     const postUpdated: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
-    console.log(postUpdated);
     socketIOPostObject.emit('update post', postUpdated, 'posts');
 
+    
     postQueue.addPostJob('updatePostInDB', {
       key: postId,
       value: updatedPost
     });
+
+    imageQueue.addImageJob('addImageToDB', {
+      key: `${userId}`,
+      imgId: result.public_id,
+      imgVersion: result.version.toString()
+    })
 
     return result;
   }
