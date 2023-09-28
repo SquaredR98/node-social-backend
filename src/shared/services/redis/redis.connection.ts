@@ -2,7 +2,7 @@ import Logger from 'bunyan';
 import { config } from '@root/config';
 import { BaseCache } from '@services/redis/base.cache';
 
-const logger: Logger = config.createLogger('redis-connection');
+const logger: Logger = config.createLogger('REDIS-SETUP');
 
 class RedisConnection extends BaseCache {
   constructor() {

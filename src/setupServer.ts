@@ -35,7 +35,7 @@ import { SocketIoNotificationHandler } from '@sockets/notification';
 import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
 
 const SERVER_PORT = 5000;
-const logger: Logger = config.createLogger('ServerSetup');
+const logger: Logger = config.createLogger('SERVER-SETUP');
 
 export class BackendServer {
   private app: Application;

@@ -3,7 +3,7 @@ import Logger from 'bunyan';
 import { config } from '@root/config';
 import { redisConnection } from './shared/services/redis/redis.connection';
 
-const logger: Logger = config.createLogger('Database');
+const logger: Logger = config.createLogger('DATABASE-SETUP');
 
 export default () => {
   const connect = () => {
