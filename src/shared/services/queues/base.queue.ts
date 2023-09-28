@@ -43,19 +43,19 @@ export abstract class BaseQueue {
       serverAdapter
     });
 
-    this.logger = config.createLogger(`${queueName}-Queue`);
+    this.logger = config.createLogger(`${queueName.toUpperCase()}-QUEUE`);
 
     this.queue.on('completed', (job: Job) => {
-      this.logger.info('Job: ', job.name, 'Successfully Completed');
+      this.logger.info('JOB: ', job.name, 'Successfully Completed');
       job.remove();
     });
 
     this.queue.on('global:completed', (jobId: string) => {
-      this.logger.info(`Job-${jobId}: Completed`);
+      this.logger.info(`JOB-${jobId}: Completed`);
     });
 
     this.queue.on('global:stalled', (jobId: string) => {
-      this.logger.info(`Job-${jobId}: Stalled`);
+      this.logger.info(`JOB-${jobId}: Stalled`);
     });
   }
 

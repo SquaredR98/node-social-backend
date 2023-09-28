@@ -11,7 +11,8 @@ export class Helpers {
     return valueString
       .split(' ')
       .map(
-        (value: string) => `${value.charAt(0).toLowerCase()}${value.slice(1).toLowerCase()}`
+        (value: string) =>
+          `${value.charAt(0).toLowerCase()}${value.slice(1).toLowerCase()}`
       )
       .join(' ');
   }
@@ -23,7 +24,7 @@ export class Helpers {
   static generateRandomIntegers(integerLength: number): number {
     const chars = '0123456789';
     let result = '';
-    for(let i = 0; i < integerLength; i++) {
+    for (let i = 0; i < integerLength; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return parseInt(result, 10);
@@ -38,5 +39,12 @@ export class Helpers {
     }
 
     return JSON.parse(prop);
+  }
+
+  static isDataURL(value: string): boolean {
+    const dataUrlRegex =
+      /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\\/?%\s]*)\s*$/i;
+    
+    return dataUrlRegex.test(value);
   }
 }
