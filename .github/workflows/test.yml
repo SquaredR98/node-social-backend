@@ -24,4 +24,4 @@ jobs:
           SECRET_KEY_ONE: 'random-key-for-testing-ci'
           SECRET_KEY_TWO: 'random-key-for-testing-ci'
           DEV_CLOUD_NAME: 'random-string'
-        run: echo ${#CLOUD_NAME}
+        run: npm run test
