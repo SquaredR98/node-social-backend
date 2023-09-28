@@ -1,5 +1,5 @@
 import { BaseQueue } from '@services/queues/base.queue';
-import { INotificationJobData } from '@notification/interfaces/notification.interface';
+import { INotificationJobData } from '@notifications/interfaces/notification.interface';
 import { notificationWorker } from '@workers/notification.worker';
 
 class NotificationQueue extends BaseQueue {
