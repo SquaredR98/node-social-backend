@@ -1,10 +1,10 @@
 name: Node Social Backend CI
 on:
   push:
-    branches: [ development, main ]
+    branches: [development, main]
 
 jobs:
-  build: 
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -12,15 +12,18 @@ jobs:
 
       - name: Using NodeJS
         uses: actions/setup-node@v1
-        with: 
+        with:
           node-version: '18.x'
 
       - name: Run NPM
         run: npm i
 
       - name: Run CI Tests
-        env: 
+        env:
           JWT_TOKEN: 'random-key-for-testing-ci'
           SECRET_KEY_ONE: 'random-key-for-testing-ci'
           SECRET_KEY_TWO: 'random-key-for-testing-ci'
+          CLOUD_NAME: ${{secrets.CLOUD_NAME}}
+          CLOUD_API_KEY: ${{secrets.CLOUD_API_KEY}}
+          CLOUD_API_SECRET: ${{secrets.CLOUD_API_SECRET}}
         run: npm run test
