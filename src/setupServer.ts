@@ -27,14 +27,15 @@ import { createAdapter } from '@socket.io/redis-adapter';
  */
 import { config } from '@root/config';
 import applicationRoutes from '@root/routes';
+import { SocketIoPostHandler } from '@sockets/post';
+import { SocketIOUserHandler } from '@sockets/user';
+import { SocketIoImageHandler } from '@sockets/image';
+import { SocketIoFollowerHandler } from '@sockets/followers';
+import { SocketIoNotificationHandler } from '@sockets/notification';
 import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
-import { SocketIoPostHandler } from './shared/sockets/post';
-import { SocketIoFollowerHandler } from './shared/sockets/followers';
-import { SocketIOUserHandler } from './shared/sockets/user';
-import { SocketIoNotificationHandler } from './shared/sockets/notification';
 
 const SERVER_PORT = 5000;
-const logger: Logger = config.createLogger('ServerSetup');
+const logger: Logger = config.createLogger('SERVER-SETUP');
 
 export class BackendServer {
   private app: Application;
@@ -198,11 +199,13 @@ export class BackendServer {
     const followSocketHandler: SocketIoFollowerHandler = new SocketIoFollowerHandler(io);
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
     const notificationSocketHandler: SocketIoNotificationHandler = new SocketIoNotificationHandler();
+    const imageSocketHandler: SocketIoImageHandler = new SocketIoImageHandler();
 
     postSocketHandler.listen();
     followSocketHandler.listen();
     userSocketHandler.listen();
     notificationSocketHandler.listen(io);
+    imageSocketHandler.listen(io);
   }
 }
 

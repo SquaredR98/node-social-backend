@@ -7,11 +7,11 @@ import {
 } from '@reactions/interfaces/reaction.interface';
 import { UserCache } from '@services/redis/user.cache';
 import { ReactionModel } from '@reactions/models/reaction.schema';
-import { PostModel } from '@post/models/post.schema';
+import { PostModel } from '@posts/models/post.schema';
 import { IUserDocument } from '@user/interfaces/user.interface';
-import { IPostDocument } from '@post/interfaces/post.interface';
-import { INotification, INotificationDocument, INotificationTemplate } from '../../../features/notification/interfaces/notification.interface';
-import { NotificationModel } from '../../../features/notification/models/notification.schema';
+import { IPostDocument } from '@posts/interfaces/post.interface';
+import { INotification, INotificationDocument, INotificationTemplate } from '../../../features/notifications/interfaces/notification.interface';
+import { NotificationModel } from '../../../features/notifications/models/notification.schema';
 import { socketIoNotificationObject } from '../../sockets/notification';
 import { notificationTemplate } from '../emails/templates/notification/notification-template';
 import { emailQueue } from '../queues/email.queue';

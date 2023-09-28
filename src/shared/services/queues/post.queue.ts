@@ -1,5 +1,5 @@
 import { BaseQueue } from '@services/queues/base.queue';
-import { IPostJobData } from '@post/interfaces/post.interface';
+import { IPostJobData } from '@posts/interfaces/post.interface';
 import { postWorker } from '../../workers/post.worker';
 
 class PostQueue extends BaseQueue {

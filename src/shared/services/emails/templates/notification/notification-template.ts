@@ -1,6 +1,6 @@
 import fs from 'fs';
 import ejs from 'ejs';
-import { INotificationTemplate } from '@notification/interfaces/notification.interface';
+import { INotificationTemplate } from '@notifications/interfaces/notification.interface';
 
 class NotificationTemplate {
   public notificationMessageTemplate(templateParams: INotificationTemplate): string {

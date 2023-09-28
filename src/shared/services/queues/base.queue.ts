@@ -6,11 +6,12 @@ import Logger from 'bunyan';
 import { config } from '@root/config';
 import { IAuthJob } from '@auth/interfaces/auth.interface';
 import { IEmailJob } from '@user/interfaces/user.interface';
-import { IPostJobData } from '@post/interfaces/post.interface';
+import { IPostJobData } from '@posts/interfaces/post.interface';
 import { IReactionJob } from '@reactions/interfaces/reaction.interface';
 import { ICommentJob } from '@comments/interfaces/comment.interface';
 import { IFollowerJobData } from '@followers/interfaces/follower.interface';
-import { INotificationJobData } from '../../../features/notification/interfaces/notification.interface';
+import { INotificationJobData } from '@notifications/interfaces/notification.interface';
+import { IFileImageJobData } from '@images/interfaces/image.interface';
 
 type IBaseJobData =
   | IAuthJob
@@ -19,7 +20,8 @@ type IBaseJobData =
   | IReactionJob
   | ICommentJob
   | IFollowerJobData
-  | INotificationJobData;
+  | INotificationJobData
+  | IFileImageJobData;
 
 let bullAdapters: BullAdapter[] = [];
 
@@ -41,19 +43,19 @@ export abstract class BaseQueue {
       serverAdapter
     });
 
-    this.logger = config.createLogger(`${queueName}-Queue`);
+    this.logger = config.createLogger(`${queueName.toUpperCase()}-QUEUE`);
 
     this.queue.on('completed', (job: Job) => {
-      this.logger.info('Job: ', job.name, 'Successfully Completed');
+      this.logger.info('JOB: ', job.name, 'Successfully Completed');
       job.remove();
     });
 
     this.queue.on('global:completed', (jobId: string) => {
-      this.logger.info(`Job-${jobId}: Completed`);
+      this.logger.info(`JOB-${jobId}: Completed`);
     });
 
     this.queue.on('global:stalled', (jobId: string) => {
-      this.logger.info(`Job-${jobId}: Stalled`);
+      this.logger.info(`JOB-${jobId}: Stalled`);
     });
   }
 
