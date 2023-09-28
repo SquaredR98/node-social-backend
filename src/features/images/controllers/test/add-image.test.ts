@@ -79,7 +79,7 @@ describe('Add', () => {
         );
 
       const url =
-        'https://res.cloudinary.com/duywfhwqq/image/upload/v1234/123456';
+        'https://res.cloudinary.com/random-string/image/upload/v1234/123456';
 
       await Add.prototype.profileImage(req, res);
       expect(
@@ -119,7 +119,7 @@ describe('Add', () => {
         {
           key: `${req.currentUser?.userId}`,
           value:
-            'https://res.cloudinary.com/duywfhwqq/image/upload/v1234/123456',
+            'https://res.cloudinary.com/random-string/image/upload/v1234/123456',
           imgId: '123456',
           imgVersion: '1234'
         }
@@ -158,7 +158,7 @@ describe('Add', () => {
         {},
         {
           image:
-            'https://res.cloudinary.com/duywfhwqq/image/upload/v1234/123456'
+            'https://res.cloudinary.com/random-string/image/upload/v1234/123456'
         },
         authUserPayload
       ) as Request;

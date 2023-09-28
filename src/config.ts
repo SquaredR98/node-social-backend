@@ -13,6 +13,7 @@ class Config {
   public NODE_ENV: string | undefined;
   public REDIS_HOST: string | undefined;
   public CLOUD_NAME: string | undefined;
+  public DEV_CLOUD_NAME: string | undefined;
   public CLOUD_API_KEY: string | undefined;
   public CLOUD_API_SECRET: string | undefined;
   public SENDER_EMAIL: string | undefined;
@@ -31,6 +32,7 @@ class Config {
     this.NODE_ENV = process.env.NODE_ENV;
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.CLOUD_NAME = process.env.CLOUD_NAME || '';
+    this.DEV_CLOUD_NAME = process.env.DEV_CLOUD_NAME || '';
     this.CLOUD_API_KEY = process.env.CLOUD_API_KEY || '';
     this.CLOUD_API_SECRET = process.env.CLOUD_API_SECRET || '';
     this.SENDER_EMAIL = process.env.SENDER_EMAIL || '';

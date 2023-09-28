@@ -35,7 +35,7 @@ export class Add {
       );
     }
 
-    const imageUrl = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${version}/${public_id}`;
+    const imageUrl = `https://res.cloudinary.com/${config.NODE_ENV === 'production' ? config.CLOUD_NAME : config.DEV_CLOUD_NAME}/image/upload/v${version}/${public_id}`;
 
     const cachedUser: IUserDocument | null =
       await userCache.updateSingleUserItemInCache(
