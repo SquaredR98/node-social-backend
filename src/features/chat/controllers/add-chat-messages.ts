@@ -6,12 +6,14 @@ import { UploadApiResponse } from 'cloudinary';
 
 import { config } from '@root/config';
 import {
+  IChatJobData,
   IMessageData,
   IMessageNotification
 } from '../interfaces/chat.interface';
 import { socketIOChatObject } from '@sockets/chat';
 import { addChatSchema } from '@chat/schemes/chat';
 import { UserCache } from '@services/redis/user.cache';
+import { chatQueue } from '@services/queues/chat.queue';
 import { emailQueue } from '@services/queues/email.queue';
 import { upload } from '@globals/helpers/cloudinary-upload';
 import { MessageCache } from '@services/redis/messages.cache';
@@ -119,6 +121,11 @@ export class Add {
 
     await messageCache.addChatMessagesToCache(
       `${conversationObjId}`,
+      messageData
+    );
+
+    chatQueue.addChatJob(
+      'addChatMessageToDB',
       messageData
     );
 

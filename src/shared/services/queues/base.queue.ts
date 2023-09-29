@@ -3,15 +3,17 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import Logger from 'bunyan';
+
 import { config } from '@root/config';
 import { IAuthJob } from '@auth/interfaces/auth.interface';
 import { IEmailJob } from '@user/interfaces/user.interface';
 import { IPostJobData } from '@posts/interfaces/post.interface';
-import { IReactionJob } from '@reactions/interfaces/reaction.interface';
 import { ICommentJob } from '@comments/interfaces/comment.interface';
-import { IFollowerJobData } from '@followers/interfaces/follower.interface';
-import { INotificationJobData } from '@notifications/interfaces/notification.interface';
 import { IFileImageJobData } from '@images/interfaces/image.interface';
+import { IReactionJob } from '@reactions/interfaces/reaction.interface';
+import { IFollowerJobData } from '@followers/interfaces/follower.interface';
+import { IChatJobData, IMessageData } from '@chat/interfaces/chat.interface';
+import { INotificationJobData } from '@notifications/interfaces/notification.interface';
 
 type IBaseJobData =
   | IAuthJob
@@ -21,7 +23,9 @@ type IBaseJobData =
   | ICommentJob
   | IFollowerJobData
   | INotificationJobData
-  | IFileImageJobData;
+  | IFileImageJobData
+  | IChatJobData
+  | IMessageData;
 
 let bullAdapters: BullAdapter[] = [];
 
@@ -60,7 +64,10 @@ export abstract class BaseQueue {
   }
 
   protected addJob(name: string, data: IBaseJobData): void {
-    this.queue.add(name, data, { attempts: 3, backoff: { type: 'fixed', delay: 5000 } });
+    this.queue.add(name, data, {
+      attempts: 3,
+      backoff: { type: 'fixed', delay: 5000 }
+    });
   }
 
   protected processJob(
