@@ -20,6 +20,13 @@ withCredentials: true
 }
 
 ###
+GET {{baseUrl}}/{{urlPath}}/chat/conversations
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
 POST {{baseUrl}}/{{urlPath}}/chat/add-chat-users
 Content-Type: application/json
 Accept: application/json

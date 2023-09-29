@@ -1,8 +1,12 @@
 import Logger from 'bunyan';
-import { findIndex } from 'lodash';
+import { find, findIndex } from 'lodash';
 
 import { config } from '@root/config';
-import { IChatUsers, IMessageData } from '@chat/interfaces/chat.interface';
+import {
+  IChatList,
+  IChatUsers,
+  IMessageData
+} from '@chat/interfaces/chat.interface';
 import { Helpers } from '@globals/helpers/helpers';
 import { BaseCache } from '@services/redis/base.cache';
 import { ServerError } from '@globals/helpers/error-handler';
@@ -87,7 +91,7 @@ export class MessageCache extends BaseCache {
 
       let chatUsers: IChatUsers[] = [];
 
-      if(userIndex === -1) {
+      if (userIndex === -1) {
         await this.client.RPUSH('chatUsers', JSON.stringify(value));
         chatUsers = await this.getChatUsersList();
       } else {
@@ -99,7 +103,9 @@ export class MessageCache extends BaseCache {
       throw new ServerError('Something went wrong. Please try again');
     }
   }
-  public async removeChatUsersFromCache(value: IChatUsers): Promise<IChatUsers[]> {
+  public async removeChatUsersFromCache(
+    value: IChatUsers
+  ): Promise<IChatUsers[]> {
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
@@ -115,13 +121,77 @@ export class MessageCache extends BaseCache {
 
       let chatUsers: IChatUsers[] = [];
 
-      if(userIndex > -1) {
+      if (userIndex > -1) {
         await this.client.LREM('chatUsers', userIndex, JSON.stringify(value));
         chatUsers = await this.getChatUsersList();
       } else {
         chatUsers = users;
       }
       return chatUsers;
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Something went wrong. Please try again');
+    }
+  }
+
+  public async getUserConversationsFromCache(
+    key: string
+  ): Promise<IMessageData[]> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+      const userChatList: string[] = await this.client.LRANGE(
+        `chatList:${key}`,
+        0,
+        -1
+      );
+      const conversations: IMessageData[] = [];
+      for (const item of userChatList) {
+        const chatItem: IChatList = Helpers.parseJson(item) as IChatList;
+        const lastMessage: string = (await this.client.LINDEX(
+          `messages:${chatItem.conversationId}`,
+          -1
+        )) as string;
+        conversations.push(Helpers.parseJson(lastMessage));
+      }
+
+      return conversations;
+    } catch (error) {
+      logger.error(error);
+      throw new ServerError('Something went wrong. Please try again');
+    }
+  }
+
+  public async getChatMessagesFromCache(
+    senderId: string,
+    receiverId: string
+  ): Promise<IMessageData[]> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+      const userChatList: string[] = await this.client.LRANGE(
+        `chatList:${senderId}`,
+        0,
+        -1
+      );
+      const receiver: string = find(userChatList, (listItem: string) =>
+        listItem.includes(receiverId)
+      ) as string;
+
+      const parsedReceiver: IChatList = Helpers.parseJson(receiver);
+
+      if (parsedReceiver) {
+        const userMessages: string[] = await this.client.LRANGE(
+          `messages:${parsedReceiver.conversationId}`,
+          0,
+          -1
+        );
+        const chatMessages: IMessageData[] = [];
+      }
+
+      return [];
     } catch (error) {
       logger.error(error);
       throw new ServerError('Something went wrong. Please try again');
