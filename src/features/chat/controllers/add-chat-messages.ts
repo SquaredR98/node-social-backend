@@ -1,28 +1,28 @@
+import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import HTTP_STATUS from 'http-status-codes';
+import { UploadApiResponse } from 'cloudinary';
 
-import { addChatSchema } from '@chat/schemes/chat';
-import { UserCache } from '@services/redis/user.cache';
-import { joiValidation } from '@globals/decorators/joi-validation.decorator';
-import { IUserDocument } from '../../user/interfaces/user.interface';
+import { config } from '@root/config';
 import {
   IMessageData,
   IMessageNotification
 } from '../interfaces/chat.interface';
-import { UploadApiResponse } from 'cloudinary';
-import { upload } from '../../../shared/globals/helpers/cloudinary-upload';
-import { result } from 'lodash';
-import { BadRequestError } from '../../../shared/globals/helpers/error-handler';
-import { config } from '../../../config';
-import mongoose from 'mongoose';
-import { socketIOChatObject } from '../../../shared/sockets/chat';
-import { INotificationTemplate } from '../../notifications/interfaces/notification.interface';
-import { notificationTemplate } from '../../../shared/services/emails/templates/notification/notification-template';
-import { emailQueue } from '../../../shared/services/queues/email.queue';
-import { AuthPayload } from '../../auth/interfaces/auth.interface';
+import { socketIOChatObject } from '@sockets/chat';
+import { addChatSchema } from '@chat/schemes/chat';
+import { UserCache } from '@services/redis/user.cache';
+import { emailQueue } from '@services/queues/email.queue';
+import { upload } from '@globals/helpers/cloudinary-upload';
+import { MessageCache } from '@services/redis/messages.cache';
+import { IUserDocument } from '@user/interfaces/user.interface';
+import { BadRequestError } from '@globals/helpers/error-handler';
+import { joiValidation } from '@globals/decorators/joi-validation.decorator';
+import { INotificationTemplate } from '@notifications/interfaces/notification.interface';
+import { notificationTemplate } from '@services/emails/templates/notification/notification-template';
 
 const userCache: UserCache = new UserCache();
+const messageCache: MessageCache = new MessageCache();
 
 export class Add {
   @joiValidation(addChatSchema)
@@ -91,25 +91,37 @@ export class Add {
 
     Add.prototype.emitSocketIoEvent(messageData);
 
-    if(!isRead) {
+    if (!isRead) {
       Add.prototype.messageNotification({
         currentUser: req.currentUser!,
         message: body,
         receiverId,
         receiverName: receiverUsername,
         messageData
-      })
+      });
     }
 
     /**
-     * 1. Add sender to chat list in cache 
-     * 2. Add receiver to chat list in cahce
      * 3. Add message data to cache
      * 4. Add message to chat queue
-     * 5. 
      */
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Message sent successfully', conversationId: conversationObjId })
+    await messageCache.addChatListToCache(
+      `${req.currentUser?.userId}`,
+      `${receiverId}`,
+      `${conversationObjId}`
+    );
+
+    await messageCache.addChatListToCache(
+      `${receiverId}`,
+      `${req.currentUser?.userId}`,
+      `${conversationObjId}`
+    );
+
+    res.status(HTTP_STATUS.OK).json({
+      message: 'Message sent successfully',
+      conversationId: conversationObjId
+    });
   }
 
   private emitSocketIoEvent(data: IMessageData): void {
@@ -123,16 +135,19 @@ export class Add {
     receiverId,
     receiverName
   }: IMessageNotification): Promise<void> {
-    const receiver: IUserDocument | null = await userCache.getUserFromCache(`${receiverId}`);
+    const receiver: IUserDocument | null = await userCache.getUserFromCache(
+      `${receiverId}`
+    );
 
-    if(receiver?.notifications?.messages) {
+    if (receiver?.notifications?.messages) {
       const templateParams: INotificationTemplate = {
         username: receiverName,
         message: message,
         header: `Message notification from ${currentUser.username}`
       };
-  
-      const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
+
+      const template: string =
+        notificationTemplate.notificationMessageTemplate(templateParams);
       emailQueue.addEmailJob('directMessageEmail', {
         receiverEmail: receiver?.email!,
         template,
