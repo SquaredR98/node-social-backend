@@ -8,13 +8,35 @@ Accept: application/json
 withCredentials: true
 
 {
-  "body": "Hello Boys",
+  "body": "Hi Man",
   "isRead": "false",
   "gifUrl": "",
-  "receiverId": "650bd7529c7495a21baa0015",
+  "receiverId": "651686cb02b21f0f988b2c33",
   "selectedImage": "",
-  "conversationId": "",
-  "receiverUsername": "raviranj",
+  "conversationId": "65169ea1ecf81697f9cb0974",
+  "receiverUsername": "squaredr",
   "receiverAvatarColor": "green",
   "receiverProfilePicture": "https://res.cloudinary.com/duywfhwqq/image/upload/v1695791960/650bd7529c7495a21baa0015"
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/add-chat-users
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "650bd7529c7495a21baa0015",
+  "userTwo": "651686cb02b21f0f988b2c33"
+}
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/chat/remove-chat-users
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne": "650bd7529c7495a21baa0015",
+  "userTwo": "651686cb02b21f0f988b2c33"
 }
