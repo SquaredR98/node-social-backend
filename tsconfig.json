@@ -79,7 +79,6 @@
     "paths": {
       "@auth/*": ["src/features/auth/*"],
       "@user/*": ["src/features/user/*"],
-      "@chat/*": ["src/features/chat/*"],
       "@posts/*": ["src/features/posts/*"],
       "@notifications/*": ["src/features/notifications/*"],
       "@images/*": ["src/features/images/*"],
