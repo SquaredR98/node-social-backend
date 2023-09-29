@@ -33,6 +33,7 @@ import { SocketIoImageHandler } from '@sockets/image';
 import { SocketIoFollowerHandler } from '@sockets/followers';
 import { SocketIoNotificationHandler } from '@sockets/notification';
 import { CustomError, IErrorResponse } from '@globals/helpers/error-handler';
+import { SocketIoChatHandler } from './shared/sockets/chat';
 
 const SERVER_PORT = 5000;
 const logger: Logger = config.createLogger('SERVER-SETUP');
@@ -200,12 +201,14 @@ export class BackendServer {
     const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
     const notificationSocketHandler: SocketIoNotificationHandler = new SocketIoNotificationHandler();
     const imageSocketHandler: SocketIoImageHandler = new SocketIoImageHandler();
+    const chatSocketHandler: SocketIoChatHandler = new SocketIoChatHandler(io);
 
     postSocketHandler.listen();
     followSocketHandler.listen();
     userSocketHandler.listen();
     notificationSocketHandler.listen(io);
     imageSocketHandler.listen(io);
+    chatSocketHandler.listen();
   }
 }
 
